@@ -1,128 +1,411 @@
 {
-  "openapi": "3.0.1",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
+  "openapi": "3.1.0",
+  "info": { "title": "FastAPI", "version": "0.1.0" },
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
+    "/users/": {
+      "post": {
+        "summary": "Create User",
+        "operationId": "create_user_users__post",
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
+            "name": "authorization",
+            "in": "header",
+            "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "Authorization"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/User" }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/users/me": {
+      "get": {
+        "summary": "Read Users Me",
+        "operationId": "read_users_me_users_me_get",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "Authorization"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
           },
-          "400": {
-            "description": "unexpected error",
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update User",
+        "operationId": "update_user_users_me_put",
+        "security": [{ "APIKeyHeader": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/webhook": {
+      "put": {
+        "summary": "Update Webhook",
+        "operationId": "update_webhook_users_me_webhook_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserUpdate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "APIKeyHeader": [] }]
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Get Create Interview Form",
+        "operationId": "get_create_interview_form__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "text/html": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/interviews/": {
+      "post": {
+        "summary": "Create Interview",
+        "operationId": "create_interview_interviews__post",
+        "security": [{ "APIKeyHeader": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_interview_interviews__post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InterviewResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Interviews",
+        "operationId": "get_interviews_interviews__get",
+        "security": [{ "APIKeyHeader": [] }],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "Client Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/InterviewSummary" },
+                  "title": "Response Get Interviews Interviews  Get"
                 }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interviews/load/{link_id}": {
+      "get": {
+        "summary": "Load Interview",
+        "operationId": "load_interview_interviews_load__link_id__get",
+        "security": [{ "APIKeyHeader": [] }],
+        "parameters": [
+          {
+            "name": "link_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Link Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InterviewState" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interviews/{link_id}": {
+      "get": {
+        "summary": "Get Interview By Id",
+        "operationId": "get_interview_by_id_interviews__link_id__get",
+        "security": [{ "APIKeyHeader": [] }],
+        "parameters": [
+          {
+            "name": "link_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Link Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Interview",
+        "operationId": "update_interview_interviews__link_id__put",
+        "security": [{ "APIKeyHeader": [] }],
+        "parameters": [
+          {
+            "name": "link_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Link Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InterviewUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interviews/{link_id}/messages": {
+      "post": {
+        "summary": "Create Message",
+        "operationId": "create_message_interviews__link_id__messages_post",
+        "security": [{ "APIKeyHeader": [] }],
+        "parameters": [
+          {
+            "name": "link_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Link Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MessageCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MessageResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Messages",
+        "operationId": "get_messages_interviews__link_id__messages_get",
+        "security": [{ "APIKeyHeader": [] }],
+        "parameters": [
+          {
+            "name": "link_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Link Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/MessageResponse" },
+                  "title": "Response Get Messages Interviews  Link Id  Messages Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -132,64 +415,431 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
+      "Body_create_interview_interviews__post": {
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
+          "name": { "type": "string", "title": "Name" },
+          "email": { "type": "string", "title": "Email" },
+          "resume_type": { "type": "string", "title": "Resume Type" },
+          "job_description_type": {
+            "type": "string",
+            "title": "Job Description Type"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+          "position": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Position"
           },
-          {
-            "required": [
-              "id"
+          "job_title": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Job Title"
+          },
+          "expiry_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
             ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+            "title": "Expiry Date"
           },
-          "message": {
-            "type": "string"
+          "client_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Client Id"
+          },
+          "mode": {
+            "allOf": [{ "$ref": "#/components/schemas/InterviewMode" }],
+            "default": "Real"
+          },
+          "resume_content": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Resume Content"
+          },
+          "resume": {
+            "anyOf": [
+              { "type": "string", "format": "binary" },
+              { "type": "null" }
+            ],
+            "title": "Resume"
+          },
+          "job_description_content": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Job Description Content"
+          },
+          "job_description": {
+            "anyOf": [
+              { "type": "string", "format": "binary" },
+              { "type": "null" }
+            ],
+            "title": "Job Description"
           }
-        }
+        },
+        "type": "object",
+        "required": ["name", "email", "resume_type", "job_description_type"],
+        "title": "Body_create_interview_interviews__post"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InterviewDetailResponse": {
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "link_id": { "type": "string", "title": "Link Id" },
+          "feedback_report_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Feedback Report Url"
+          },
+          "feedback_report": {
+            "anyOf": [{ "type": "object" }, { "type": "null" }],
+            "title": "Feedback Report"
+          },
+          "resume": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Resume"
+          },
+          "job_description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Job Description"
+          },
+          "transcripts": {
+            "items": { "$ref": "#/components/schemas/MessageResponse" },
+            "type": "array",
+            "title": "Transcripts"
+          },
+          "status": { "type": "string", "title": "Status" },
+          "expiry_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Expiry Date"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "client_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Client Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "link_id",
+          "feedback_report_url",
+          "feedback_report",
+          "resume",
+          "job_description",
+          "transcripts",
+          "status",
+          "expiry_date",
+          "created_at",
+          "updated_at",
+          "client_id"
+        ],
+        "title": "InterviewDetailResponse"
+      },
+      "InterviewMode": {
+        "type": "string",
+        "enum": ["Real", "Practice", "Resume Builder"],
+        "title": "InterviewMode"
+      },
+      "InterviewResponse": {
+        "properties": {
+          "link_id": { "type": "string", "title": "Link Id" },
+          "interview_url": { "type": "string", "title": "Interview Url" }
+        },
+        "type": "object",
+        "required": ["link_id", "interview_url"],
+        "title": "InterviewResponse"
+      },
+      "InterviewState": {
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "position": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Position"
+          },
+          "job_title": { "type": "string", "title": "Job Title" },
+          "client_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Client Id"
+          },
+          "status": {
+            "allOf": [{ "$ref": "#/components/schemas/InterviewStatus" }],
+            "default": "Created"
+          },
+          "expiry_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Expiry Date"
+          },
+          "link_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Link Id"
+          },
+          "mode": {
+            "allOf": [{ "$ref": "#/components/schemas/InterviewMode" }],
+            "default": "Real"
+          },
+          "id": { "type": "integer", "title": "Id" },
+          "user_id": { "type": "integer", "title": "User Id" },
+          "greeting_message": { "type": "string", "title": "Greeting Message" },
+          "system_prompt": { "type": "string", "title": "System Prompt" },
+          "resume": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Resume"
+          },
+          "job_description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Job Description"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "messages": {
+            "items": { "$ref": "#/components/schemas/MessageResponse" },
+            "type": "array",
+            "title": "Messages",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "job_title",
+          "id",
+          "user_id",
+          "greeting_message",
+          "system_prompt",
+          "created_at"
+        ],
+        "title": "InterviewState"
+      },
+      "InterviewStatus": {
+        "type": "string",
+        "enum": ["Created", "In Progress", "Completed"],
+        "title": "InterviewStatus"
+      },
+      "InterviewSummary": {
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "user_id": { "type": "integer", "title": "User Id" },
+          "client_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Client Id"
+          },
+          "name": { "type": "string", "title": "Name" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "job_title": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Job Title"
+          },
+          "status": { "$ref": "#/components/schemas/InterviewStatus" },
+          "expiry_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Expiry Date"
+          },
+          "link_id": { "type": "string", "title": "Link Id" },
+          "resume": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Resume"
+          },
+          "job_description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Job Description"
+          },
+          "feedback_report_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Feedback Report Url"
+          },
+          "mode": { "$ref": "#/components/schemas/InterviewMode" },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "client_id",
+          "name",
+          "email",
+          "job_title",
+          "status",
+          "expiry_date",
+          "link_id",
+          "resume",
+          "job_description",
+          "feedback_report_url",
+          "mode",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "InterviewSummary"
+      },
+      "InterviewUpdate": {
+        "properties": {
+          "status": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/InterviewStatus" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "InterviewUpdate"
+      },
+      "MessageCreate": {
+        "properties": {
+          "content": { "type": "string", "title": "Content" },
+          "sender": { "type": "string", "title": "Sender" }
+        },
+        "type": "object",
+        "required": ["content", "sender"],
+        "title": "MessageCreate"
+      },
+      "MessageResponse": {
+        "properties": {
+          "content": { "type": "string", "title": "Content" },
+          "sender": { "type": "string", "title": "Sender" },
+          "id": { "type": "integer", "title": "Id" },
+          "interview_id": { "type": "integer", "title": "Interview Id" },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": ["content", "sender", "id", "interview_id", "created_at"],
+        "title": "MessageResponse"
+      },
+      "User": {
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "webhook": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              { "type": "null" }
+            ],
+            "title": "Webhook"
+          },
+          "id": { "type": "integer", "title": "Id" },
+          "firebase_uid": { "type": "string", "title": "Firebase Uid" },
+          "api_key": { "type": "string", "title": "Api Key" },
+          "role": { "type": "string", "title": "Role" },
+          "interview_url_base": {
+            "type": "string",
+            "title": "Interview Url Base"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "id",
+          "firebase_uid",
+          "api_key",
+          "role",
+          "interview_url_base"
+        ],
+        "title": "User"
+      },
+      "UserCreate": {
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "webhook": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              { "type": "null" }
+            ],
+            "title": "Webhook"
+          },
+          "interview_url_base": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Interview Url Base",
+            "default": "https://interview.vocidian.com/talk?id="
+          }
+        },
+        "type": "object",
+        "required": ["name", "email"],
+        "title": "UserCreate"
+      },
+      "UserUpdate": {
+        "properties": {
+          "webhook": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              { "type": "null" }
+            ],
+            "title": "Webhook"
+          }
+        },
+        "type": "object",
+        "title": "UserUpdate"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
+      "APIKeyHeader": { "type": "apiKey", "in": "header", "name": "X-API-Key" }
     }
   }
 }
